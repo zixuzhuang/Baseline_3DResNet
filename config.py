@@ -1,6 +1,6 @@
 import time
 
-SAVE_PATH = './data/3D_ResNet/'
+from batchgenerators.utilities.file_and_folder_operations import maybe_mkdir_p
 
 EPOCH = 300
 MILESTONES = 5
@@ -17,6 +17,18 @@ SEED_DIVIDE = 0
 DATE = time.strftime("%Y%m%d")  # time of we run the script
 TIME = time.strftime("%H%M%S")
 
-PATH = './data/Net_Input/3D_20210118/'
+PATH = "./data/Net_Input/3D_64_z1.0_l0.70_h0.10_20210125/"
 NUM_CLASSES = 3
-# INPUT_FEAT = PATH.format("_feat_list.pkl")
+
+OUTPUT_DIR = "./results"
+TF = "{}/tensorboards/{}/".format(OUTPUT_DIR, DATE)
+TF += "{}-{}-{}/"
+maybe_mkdir_p(TF)
+
+CKPT = "{}/checkpoints/{}/".format(OUTPUT_DIR, DATE)
+maybe_mkdir_p(CKPT)
+CKPT += "{}-{}-{}/"
+
+LOG = "{}/logs/{}/".format(OUTPUT_DIR, DATE)
+maybe_mkdir_p(LOG)
+LOG += "{}-{}-{}.log"

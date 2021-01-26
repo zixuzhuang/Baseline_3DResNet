@@ -240,7 +240,7 @@ class ResNet(nn.Module):
 
 
 def resnet10(**kwargs):
-    """Constructs a ResNet-18 model."""
+    """Constructs a ResNet-10 model."""
     model = ResNet(BasicBlock, [1, 1, 1, 1], **kwargs)
     return model
 
