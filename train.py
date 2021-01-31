@@ -12,9 +12,9 @@ from torch.cuda.amp import GradScaler, autocast
 
 import config
 from dataloader import Res3D_Dataloader
-from resnet_3d import resnet18
+from resnet_3d import get_net
 from utils.utils import (add_in_log, cal_result_parameters, get_args, get_lr,
-                         init_train, refine_cam, save_model, seed_reproducer)
+                         init_train, save_model, seed_reproducer)
 
 
 def train(epoch):
@@ -31,7 +31,7 @@ def train(epoch):
 
         optimizer.zero_grad()
         with autocast():
-            cls, cams = net(inputs)
+            cls = net(inputs)
             loss = loss_cls(cls, labels)
 
         scaler.scale(loss).backward()
@@ -69,7 +69,7 @@ def eval_training(epoch, datatype):
             inputs = inputs.cuda()
             labels = labels.cuda()
 
-            cls, cams = net(inputs)  # cls is output
+            cls = net(inputs)  # cls is output
             label_list.append(labels)
             output_list.append(cls)
     labels_stack = torch.cat(label_list, dim=0)
@@ -91,8 +91,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     scaler = GradScaler()
     args = get_args(argparse.ArgumentParser())
-    tf_dir, ckpt_path, writer = init_train(args, "3D_ResNet18")
-    net = resnet18().cuda()
+    tf_dir, ckpt_path, writer = init_train(args)
+    net = get_net(args.net).cuda()
     optimizer = optim.Adam(net.parameters(), lr=config.LR, weight_decay=config.WD)
     train_ldr, val_ldr, test_ldr = Res3D_Dataloader(bs=args.bs, fold_idx=args.fold)
     loss_cls = nn.CrossEntropyLoss()

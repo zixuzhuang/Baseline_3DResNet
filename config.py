@@ -2,7 +2,7 @@ import time
 
 from batchgenerators.utilities.file_and_folder_operations import maybe_mkdir_p
 
-EPOCH = 300
+EPOCH = 150
 MILESTONES = 5
 SAVE_EPOCH = 10
 
@@ -22,8 +22,8 @@ NUM_CLASSES = 3
 
 OUTPUT_DIR = "./results"
 TF = "{}/tensorboards/{}/".format(OUTPUT_DIR, DATE)
-TF += "{}-{}-{}/"
 maybe_mkdir_p(TF)
+TF += "{}-{}-{}/"
 
 CKPT = "{}/checkpoints/{}/".format(OUTPUT_DIR, DATE)
 maybe_mkdir_p(CKPT)

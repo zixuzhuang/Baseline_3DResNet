@@ -159,12 +159,16 @@ class ResNet(nn.Module):
     ):
         self.inplanes = 64
         super(ResNet, self).__init__()
-        self.conv1_ct = nn.Conv3d(
-            1, 64, kernel_size=7, stride=(1, 2, 2), padding=(3, 3, 3), bias=False
+
+        self.layer0 = nn.Sequential(
+            nn.Conv3d(
+                1, 64, kernel_size=7, stride=(1, 2, 2), padding=(3, 3, 3), bias=False
+            ),
+            nn.BatchNorm3d(64),
+            nn.ReLU(inplace=True),
+            nn.MaxPool3d(kernel_size=(3, 3, 3), stride=2, padding=1),
         )
-        self.bn1 = nn.BatchNorm3d(64)
-        self.relu = nn.ReLU(inplace=True)
-        self.maxpool = nn.MaxPool3d(kernel_size=(3, 3, 3), stride=2, padding=1)
+
         self.layer1 = self._make_layer(block, 64, layers[0], shortcut_type)
         self.layer2 = self._make_layer(block, 128, layers[1], shortcut_type, stride=2)
         self.layer3 = self._make_layer(block, 256, layers[2], shortcut_type, stride=2)
@@ -208,35 +212,31 @@ class ResNet(nn.Module):
 
         return nn.Sequential(*layers)
 
-    def get_cam(self, x_init_shape, fmap):
-        x_init_shape = x_init_shape[2:]
-        _fn = nn.Upsample(size=x_init_shape, mode="trilinear", align_corners=True)
-        weight = self.classify.weight
-        cams = _fn(
-            F.conv3d(
-                fmap, weight.detach().unsqueeze(2).unsqueeze(3).unsqueeze(4), bias=None
-            )
-        )
-        return cams
+    # def get_cam(self, x_init_shape, fmap):
+    #     x_init_shape = x_init_shape[2:]
+    #     _fn = nn.Upsample(size=x_init_shape, mode="trilinear", align_corners=True)
+    #     weight = self.classify.weight
+    #     cams = _fn(
+    #         F.conv3d(
+    #             fmap, weight.detach().unsqueeze(2).unsqueeze(3).unsqueeze(4), bias=None
+    #         )
+    #     )
+    #     return cams
 
     def forward(self, x):
-        x_init_shape = x.shape
-        x = self.conv1_ct(x)
-        x = self.bn1(x)
-        x = self.relu(x)
-        x = self.maxpool(x)
-
+        # x_init_shape = x.shape
+        x = self.layer0(x)
         x = self.layer1(x)
         x = self.layer2(x)
         x = self.layer3(x)
         feature = self.layer4(x)
-        cams = self.get_cam(x_init_shape, feature)
+        # cams = self.get_cam(x_init_shape, feature)
         out = self.avgpool(feature)
         out = out.view(out.size(0), -1)
         cls = self.classify(out)
 
         # return out, cam_classes_refined
-        return cls, cams
+        return cls
 
 
 def resnet10(**kwargs):
@@ -279,3 +279,16 @@ def resnet200(**kwargs):
     """Constructs a ResNet-101 model."""
     model = ResNet(Bottleneck, [3, 24, 36, 3], **kwargs)
     return model
+
+
+def get_net(net_name):
+    if "10" in net_name:
+        return resnet10()
+    elif "18" in net_name:
+        return resnet18()
+    elif "34" in net_name:
+        return resnet34()
+    elif "50" in net_name:
+        return resnet50()
+    elif "101" in net_name:
+        return resnet101()

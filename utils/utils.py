@@ -69,18 +69,19 @@ def get_lr(epoch):
 
 
 def get_args(parser):
-    parser.add_argument("-bs", type=int, default=32, help="batch size")
+    parser.add_argument("-bs", type=int, default=4, help="batch size")
     parser.add_argument("-fold", type=int, default=0, help="which fold")
+    parser.add_argument("-net", type=str, help="net")
     args = parser.parse_args()
     return args
 
 
-def init_train(args, traintype):
+def init_train(args):
 
     # fix seed
     seed_reproducer(2333)
 
-    path_block = [traintype, args.fold, config.TIME]
+    path_block = [args.net, args.fold, config.TIME]
     # tensorboard
     tf_dir = config.TF.format(*path_block)
     maybe_mkdir_p(tf_dir)
@@ -105,7 +106,7 @@ def init_train(args, traintype):
     return tf_dir, ckpt_path, writer
 
 
-def save_model(epoch, result, ckpt_path, net, nname):
+def save_model(epoch, result, ckpt_path, net, nname, save_best=True):
     best_ckpt = "{}{}-{}.pth".format(ckpt_path, nname, "best")
     latest_ckpt = "{}{}-{}.pth".format(ckpt_path, nname, "latest")
     # print(result["REC"])
@@ -119,7 +120,7 @@ def save_model(epoch, result, ckpt_path, net, nname):
         bestResult.epoch = epoch
         torch.save(net, best_ckpt)
     # Print best log
-    if nname != "ViT":
+    if save_best:
         logging.info(
             "BEST_RECALL: {:.3f}, EPOCH: {:3}".format(
                 bestResult.recall, bestResult.epoch
