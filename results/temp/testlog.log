@@ -1,0 +1,10 @@
+[21-02-21 00:02:17-DEBUG] 
+Checkpoints
+Tensorboard
+Input Data
+./results/temp/
+./results/temp/
+./data/Net_Input/3D_64_z1.0_l0.70_h0.10_20210125/|
+[21-02-21 00:02:17-INFO] 
+|   NET   |   BS    |  FOLD   |   LR    |   LD    |   WD    |   WU    |
+|3D_ResNet50|    4    |    0    | 0.0001  |  0.98   |  1e-05  |   20    |

@@ -52,23 +52,13 @@ class Res3D_Dataset(Dataset):
 
 
 def Res3D_Dataloader(bs=4, fold_idx=0, num_workers=8):
-    return (
-        DataLoader(
-            Res3D_Dataset(data_type="train", fold_idx=fold_idx),
+    dataset = {}
+    type_list = ["train", "val", "test"]
+    for item in type_list:
+        dataset[item] = DataLoader(
+            Res3D_Dataset(data_type=item, fold_idx=fold_idx),
             batch_size=bs,
             shuffle=True,
             num_workers=num_workers,
-        ),
-        DataLoader(
-            Res3D_Dataset(data_type="val", fold_idx=fold_idx),
-            batch_size=bs,
-            shuffle=False,
-            num_workers=num_workers,
-        ),
-        DataLoader(
-            Res3D_Dataset(data_type="test", fold_idx=fold_idx),
-            batch_size=bs,
-            shuffle=False,
-            num_workers=num_workers,
-        ),
-    )
+        )
+    return dataset

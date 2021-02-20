@@ -2,13 +2,13 @@ import time
 
 from batchgenerators.utilities.file_and_folder_operations import maybe_mkdir_p
 
-EPOCH = 150
+EPOCH = 50
 MILESTONES = 5
 SAVE_EPOCH = 10
 
 NUM_PATCHES = 377
 
-LR = 3e-5  # learning rate
+LR = 1e-4  # learning rate
 LD = 0.98  # learning rate decay rate
 WD = 1e-5  # weight decay
 WU = 20  # warm up

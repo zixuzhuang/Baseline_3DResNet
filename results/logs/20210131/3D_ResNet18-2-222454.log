@@ -1,0 +1,11 @@
+[21-01-31 22:24:54-DEBUG] Checkpoints is in:
+./results/checkpoints/20210131/3D_ResNet18-2-222454/
+[21-01-31 22:24:54-DEBUG] Tensorboard is in:
+./results/tensorboards/20210131/3D_ResNet18-2-222454/
+[21-01-31 22:24:54-DEBUG] Data is in:
+./data/Net_Input/3D_64_z1.0_l0.70_h0.10_20210125/
+[21-01-31 22:24:54-DEBUG] LR: 3e-05, LD: 0.98
+[21-01-31 22:24:54-DEBUG] WD: 1e-05, WU: 20
+[21-01-31 22:24:54-DEBUG] BS: 4, FOLD: 2
+
+
